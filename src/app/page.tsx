@@ -1,103 +1,81 @@
-import Image from "next/image";
+"use client"
+import { Button } from "@/shared/ui/shadcn/button";
+import { Input } from "@/shared/ui/shadcn/input";
+import { Label } from "@/shared/ui/shadcn/label";
 
+
+import React, { useState } from "react";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/ui/shadcn/sheet";
+
+
+const codeToImage: Record<string, string> = {
+  "X17-GA": "/blood1.png",
+  "OPR-X1": "/blood2.jpeg",
+};
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [sheetOpen, setSheetOpen] = useState<boolean>(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  function handleOpenChange(open: boolean) {
+    setSheetOpen(open);
+    if (!open) setSelectedImage(null);
+  }
+
+  function handleAnalyse() {
+    const input = document.getElementById("sheet-demo-name") as HTMLInputElement | null;
+    const code = input?.value ?? "";
+    const img = codeToImage[code] ?? null;
+    
+    if (img) {
+      setSelectedImage(img);
+    } else {
+      setSelectedImage(null);
+      alert("Blood sample is abnormal.");
+    }
+  }
+  return (
+    <main className="w-full min-h-screen bg-[url('/headerback.png')] bg-cover bg-center bg-no-repeat">
+      <div className={`container flex items-center flex-col justify-center h-full`}>
+        <h1 className="text-white text-[23px] whitespace-nowrap font-bold">Welcome to Blood Analyzer</h1>
+        <p className="font-extrabold text-[20px] mt-4 text-gray-900 max-w-prose leading-relaxed">Welcome to Blood Analyzer
+Blood Analyzer is an advanced biological analysis platform designed to deliver fast, accurate, and comprehensive evaluation of blood samples using modern computational technologies and automated diagnostic systems. The platform combines digital microscopy, molecular modeling, and intelligent data processing to simulate laboratory-grade analysis in a secure online environment.
+Our system is capable of identifying blood type, genetic markers, biochemical composition, and potential abnormalities through a multi-stage analytical process. By utilizing predictive algorithms and pattern recognition, Blood Analyzer provides detailed insights that support medical research, forensic investigation, and educational purposes.
+The technology behind Blood Analyzer is built on precision and reliability. Each analysis undergoes multiple verification layers to ensure consistency and accuracy of results. Secure data protocols protect user information, while controlled access mechanisms maintain confidentiality for sensitive biological data.
+In addition to standard analysis, the platform includes extended detection modules capable of identifying unusual cellular structures, foreign substances, and rare biological signatures. These advanced features allow professionals to detect anomalies that may require deeper laboratory investigation.
+Blood Analyzer continues to evolve through constant technological improvements and system updates. Our mission is to provide innovative analytical solutions that enhance understanding of biological information and support scientific advancement.
+Blood Analyzer — Advanced Insight into Every Drop.</p>
+           <Sheet open={sheetOpen} onOpenChange={handleOpenChange}>
+      <SheetTrigger asChild>
+        <Button className="bg-[#EB5757] text-white px-6 py-3 rounded-md mt-4 hover:bg-[#d63626] transition-colors">Analyse Blood</Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Analyse Blood</SheetTitle>
+          <SheetDescription>
+            You can alayse your blood here. Just fill the form and submit it. We will send you the results in 1 second.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="grid flex-1 auto-rows-min gap-6 px-4">
+          <div className="grid gap-3">
+            <Label htmlFor="sheet-demo-name">DNK code</Label>
+            <Input id="sheet-demo-name" placeholder="X17-GA" />
+          </div>
+          {selectedImage && (
+            <div className="flex justify-center">
+              <img src={selectedImage} alt="analysis result" className="max-h-[100vh] w-full max-w-2xl object-contain rounded-md" />
+            </div>
+          )}
+          
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <SheetFooter>
+          <Button type="button" onClick={handleAnalyse}>Analyse Blood</Button>
+          <SheetClose asChild>
+            <Button variant="outline">Close</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+      </div>
+    </main>
   );
 }
