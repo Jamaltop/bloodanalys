@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -13,6 +14,7 @@ const RegisterPage = () => {
     email: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const { register } = useAuth();
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({
@@ -24,6 +26,19 @@ const RegisterPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // create avatar using dicebear with username/email as seed
+    const seed = formData.username || formData.email || Date.now().toString();
+    const avatar = `https://api.dicebear.com/6.x/identicon/svg?seed=${encodeURIComponent(
+      seed
+    )}`;
+
+    register({
+      username: formData.username || formData.email?.split("@")[0] || "user",
+      fullname: formData.fullname,
+      email: formData.email,
+      avatar,
+    });
+
     router.push("/");
   };
 

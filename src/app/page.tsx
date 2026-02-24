@@ -4,17 +4,27 @@ import { Input } from "@/shared/ui/shadcn/input";
 import { Label } from "@/shared/ui/shadcn/label";
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/shared/ui/shadcn/sheet";
 
 
 const codeToImage: Record<string, string> = {
-  "X17-GA": "/blood1.png",
+  "X17-GA": "/blood1.jpeg",
   "OPR-X1": "/blood2.jpeg",
 };
 export default function Home() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState<boolean>(false);
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/register");
+    }
+  }, [user, router]);
 
   function handleOpenChange(open: boolean) {
     setSheetOpen(open);
@@ -58,7 +68,7 @@ Blood Analyzer — Advanced Insight into Every Drop.</p>
         <div className="grid flex-1 auto-rows-min gap-6 px-4">
           <div className="grid gap-3">
             <Label htmlFor="sheet-demo-name">DNK code</Label>
-            <Input id="sheet-demo-name" placeholder="X17-GA" />
+            <Input id="sheet-demo-name" placeholder="P18-UA" />
           </div>
           {selectedImage && (
             <div className="flex justify-center">

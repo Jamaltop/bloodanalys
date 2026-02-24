@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui/shadcn/button";
 import { Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const LoginPage = () => {
   const route = useRouter();
@@ -11,8 +12,16 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const { login } = useAuth();
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    const username = email.split("@")[0] || "user";
+    const seed = username + Date.now().toString().slice(-4);
+    const avatar = `https://api.dicebear.com/6.x/identicon/svg?seed=${encodeURIComponent(seed)}`;
+
+    login({ username, fullname: username, email, avatar });
+
     route.push("/");
   };
 
